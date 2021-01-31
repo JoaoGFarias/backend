@@ -15,7 +15,7 @@ import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import petstore.models.*
 
-class PostPetsSteps: En {
+class ChangePetsSteps: En {
 
 
     private lateinit var returnedPet: Pet
@@ -24,23 +24,34 @@ class PostPetsSteps: En {
         Given("the user adds a new pet with {string} name, {string}, and {string} status") {
                 name: String, category: String, status: String ->
             run {
+                val petToSave = createPet(name, category, status)
+
                 returnedPet = addPetToStore(
-                    createPet(name, category, status)
+                    petToSave
                 )
+
+                assertAll {
+                    assertThat(returnedPet).`has same name as`(petToSave)
+                    assertThat(returnedPet.category).`is in same category as`(petToSave)
+                    assertThat(returnedPet).`has same status as`(petToSave)
+                }
             }
 
         }
 
-        Then("the pet with {string} name, {string}, and {string} is returned") {
-                name: String, category: String, status: String ->
+        And("the user marks the pet as {string}") {
+            newStatus: String ->
             run {
-                val expectedPet = createPet(name, category, status)
+                val updatedPet = returnedPet.copy(status = newStatus)
+                returnedPet = updatePetInStore(updatedPet)
+
                 assertAll {
-                    assertThat(returnedPet).`has same name as`(expectedPet)
-                    assertThat(returnedPet.category).`is in same category as`(expectedPet)
-                    assertThat(returnedPet).`has same status as`(expectedPet)
+                    assertThat(returnedPet).`has same id as`(updatedPet)
+                    assertThat(returnedPet).`has same name as`(updatedPet)
+                    assertThat(returnedPet).`has same status as`(updatedPet)
                 }
             }
+
         }
     }
 
@@ -62,5 +73,16 @@ class PostPetsSteps: En {
     private fun makePetJson(pet: Pet) =
         Gson().toJson(pet, Pet::class.java)
 
+    private fun updatePetInStore(pet: Pet) =
+        Given {
+            port(8080).contentType(ContentType.JSON)
+                .body(makePetJson(pet))
+        }. When {
+            put("/api/v3/pet")
+        }. Then {
+            statusCode(HttpStatus.SC_OK)
+        }. Extract {
+            body().`as`(Pet::class.java)
+        }
 }
 

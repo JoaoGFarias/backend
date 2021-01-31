@@ -26,6 +26,10 @@ data class Tag (
     val name: String
 )
 
+fun Assert<Pet>.`has same id as`(expectedPet: Pet) {
+    prop(Pet::id).isEqualTo(expectedPet.id)
+}
+
 fun Assert<Pet>.`has same name as`(expectedPet: Pet) {
     prop(Pet::name).isEqualTo(expectedPet.name)
 }
