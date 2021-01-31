@@ -1,4 +1,5 @@
-Feature: Demo feature
+Feature: Selling a Pet
 
-  Scenario: Demo scenario
-    Given demo
+  Scenario: User can inspect the available pets
+    When the user fetches the "available" information
+    Then there are "available" pets
