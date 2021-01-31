@@ -3,18 +3,17 @@ package petstore
 import assertk.Assert
 import assertk.assertAll
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.prop
+import assertk.assertions.*
 import com.google.gson.Gson
 import io.cucumber.java8.En
 import io.restassured.http.ContentType
+import io.restassured.http.Header
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import petstore.models.*
-
 class ChangePetsSteps: En {
 
 
@@ -36,10 +35,9 @@ class ChangePetsSteps: En {
                     assertThat(returnedPet).`has same status as`(petToSave)
                 }
             }
-
         }
 
-        And("the user marks the pet as {string}") {
+        When("the user marks the pet as {string}") {
             newStatus: String ->
             run {
                 val updatedPet = returnedPet.copy(status = newStatus)
@@ -51,7 +49,16 @@ class ChangePetsSteps: En {
                     assertThat(returnedPet).`has same status as`(updatedPet)
                 }
             }
+        }
 
+        When("the user deletes the pet") {
+            deletePet(returnedPet)
+        }
+
+        Then("the pet no longer exists") {
+            assertThat {
+                fetchPetById(returnedPet)
+            }.isFailure().messageContains("<200> but was <404>")
         }
     }
 
@@ -84,5 +91,25 @@ class ChangePetsSteps: En {
         }. Extract {
             body().`as`(Pet::class.java)
         }
+
+    private fun deletePet(pet: Pet) {
+        Given {
+            port(8080)
+        }. When {
+            delete("/api/v3/pet/${pet.id}")
+        }. Then {
+            statusCode(HttpStatus.SC_OK)
+        }
+    }
+
+    private fun fetchPetById(pet: Pet) =
+        Given {
+            port(8080)
+        }. When {
+            get("/api/v3/pet/${pet.id}")
+        }. Then {
+            statusCode(HttpStatus.SC_OK)
+        }
 }
+
 

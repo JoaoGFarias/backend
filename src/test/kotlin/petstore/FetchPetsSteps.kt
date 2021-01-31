@@ -21,7 +21,6 @@ class FetchPetsSteps: En {
             run {
                 fetchedPets = fetchPetsByStatus(status)
             }
-
         }
 
         Then("there are {string} pets") {
