@@ -10,13 +10,13 @@ import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import petstore.models.Pet
 
-class PetStoreSteps: En {
+class FetchPetsSteps: En {
 
     private lateinit var fetchedPets: Set<Pet>
 
     init {
 
-        Given("the user fetches the {string} information") {
+        When("the user fetches the {string} pets") {
                 status: String ->
             run {
                 fetchedPets = fetchPetsByStatus(status)
@@ -24,7 +24,7 @@ class PetStoreSteps: En {
 
         }
 
-        Then("there are {status} pets") {
+        Then("there are {string} pets") {
                 status: String ->
             run {
                 val petsWithStatus = fetchedPets.find { it.status == status }
@@ -35,7 +35,7 @@ class PetStoreSteps: En {
 
     private fun fetchPetsByStatus(status: String): Set<Pet> =
         Given {
-            port(8080).queryParam("status",status)
+            port(8080).queryParam("status", status)
         }. When {
             get("/api/v3/pet/findByStatus")
         }. Then {
