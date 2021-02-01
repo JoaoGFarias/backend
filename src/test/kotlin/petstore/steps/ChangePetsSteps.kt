@@ -1,19 +1,19 @@
-package petstore
+package petstore.steps
 
-import assertk.Assert
 import assertk.assertAll
 import assertk.assertThat
-import assertk.assertions.*
+import assertk.assertions.isFailure
+import assertk.assertions.messageContains
 import com.google.gson.Gson
 import io.cucumber.java8.En
 import io.restassured.http.ContentType
-import io.restassured.http.Header
 import io.restassured.module.kotlin.extensions.Extract
 import io.restassured.module.kotlin.extensions.Given
 import io.restassured.module.kotlin.extensions.Then
 import io.restassured.module.kotlin.extensions.When
 import org.apache.http.HttpStatus
 import petstore.models.*
+
 class ChangePetsSteps: En {
 
 
@@ -31,7 +31,7 @@ class ChangePetsSteps: En {
 
                 assertAll {
                     assertThat(returnedPet).`has same name as`(petToSave)
-                    assertThat(returnedPet.category).`is in same category as`(petToSave)
+                    assertThat(returnedPet.category!!).`is in same category as`(petToSave)
                     assertThat(returnedPet).`has same status as`(petToSave)
                 }
             }
@@ -67,10 +67,10 @@ class ChangePetsSteps: En {
 
     private fun addPetToStore(pet: Pet) =
         Given {
-            port(8080).contentType(ContentType.JSON)
+            contentType(ContentType.JSON)
                 .body(makePetJson(pet))
         }. When {
-            post("/api/v3/pet")
+            post("https://petstore.swagger.io/v2/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -82,10 +82,10 @@ class ChangePetsSteps: En {
 
     private fun updatePetInStore(pet: Pet) =
         Given {
-            port(8080).contentType(ContentType.JSON)
+            contentType(ContentType.JSON)
                 .body(makePetJson(pet))
         }. When {
-            put("/api/v3/pet")
+            put("https://petstore.swagger.io/v2/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -93,20 +93,16 @@ class ChangePetsSteps: En {
         }
 
     private fun deletePet(pet: Pet) {
-        Given {
-            port(8080)
-        }. When {
-            delete("/api/v3/pet/${pet.id}")
+        When {
+            delete("https://petstore.swagger.io/v2/pet/${pet.id}")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }
     }
 
     private fun fetchPetById(pet: Pet) =
-        Given {
-            port(8080)
-        }. When {
-            get("/api/v3/pet/${pet.id}")
+        When {
+            get("https://petstore.swagger.io/v2/pet/${pet.id}")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }

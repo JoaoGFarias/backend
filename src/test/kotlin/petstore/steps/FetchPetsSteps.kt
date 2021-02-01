@@ -1,4 +1,4 @@
-package petstore
+package petstore.steps
 
 import assertk.assertThat
 import assertk.assertions.isNotNull
@@ -34,9 +34,9 @@ class FetchPetsSteps: En {
 
     private fun fetchPetsByStatus(status: String): Set<Pet> =
         Given {
-            port(8080).queryParam("status", status)
+            queryParam("status", status)
         }. When {
-            get("/api/v3/pet/findByStatus")
+            get("https://petstore.swagger.io/v2/pet/findByStatus")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {

@@ -7,8 +7,8 @@ import java.util.*
 
 data class Pet(
     val id: String = randomId(),
-    val category: PetCategory,
-    val name: String,
+    val category: PetCategory?,
+    val name: String?,
     val photoUrls: List<String> = emptyList(),
     val tags: List<Tag> = emptyList(),
     val status: String
@@ -18,7 +18,7 @@ fun randomId() = Random().nextInt().toUInt().toString()
 
 data class PetCategory (
     val id: String = randomId(),
-    val name: String
+    val name: String? = ""
 )
 
 data class Tag (
@@ -39,5 +39,5 @@ fun Assert<Pet>.`has same status as`(expectedPet: Pet) {
 }
 
 fun Assert<PetCategory>.`is in same category as`(expectedPet: Pet) {
-    prop(PetCategory::name).isEqualTo(expectedPet.category.name)
+    prop(PetCategory::name).isEqualTo(expectedPet.category!!.name)
 }
