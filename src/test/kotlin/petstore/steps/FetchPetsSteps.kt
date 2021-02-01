@@ -3,23 +3,23 @@ package petstore.steps
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import io.cucumber.java8.En
-import io.restassured.module.kotlin.extensions.Extract
-import io.restassured.module.kotlin.extensions.Given
-import io.restassured.module.kotlin.extensions.Then
-import io.restassured.module.kotlin.extensions.When
-import org.apache.http.HttpStatus
+import io.cucumber.java8.HookNoArgsBody
+import petstore.actors.PetStore
 import petstore.models.Pet
 
 class FetchPetsSteps: En {
 
+    private lateinit var petStore: PetStore
     private lateinit var fetchedPets: Set<Pet>
 
     init {
 
+        Before(HookNoArgsBody { startStore() })
+
         When("the user fetches the {string} pets") {
                 status: String ->
             run {
-                fetchedPets = fetchPetsByStatus(status)
+                fetchedPets = petStore.fetchPetsByStatus(status)
             }
         }
 
@@ -32,15 +32,8 @@ class FetchPetsSteps: En {
         }
     }
 
-    private fun fetchPetsByStatus(status: String): Set<Pet> =
-        Given {
-            queryParam("status", status)
-        }. When {
-            get("https://petstore.swagger.io/v2/pet/findByStatus")
-        }. Then {
-            statusCode(HttpStatus.SC_OK)
-        }. Extract {
-            body().`as`(Array<Pet>::class.java)
-        }.toSet()
+    private fun startStore() {
+        petStore = PetStore()
+    }
 
 }
