@@ -16,7 +16,8 @@
         <kotlin.code.style>official</kotlin.code.style>
         <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
         <kotlin-test-junit5.version>1.4.21</kotlin-test-junit5.version>
-        <junit-jupiter-api.version>5.6.0</junit-jupiter-api.version>
+        <junit-jupiter-api.version>5.7.0</junit-jupiter-api.version>
+        <junit-vintage-engine.version>5.7.0</junit-vintage-engine.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 
         <!--Dependencies-->
@@ -108,12 +109,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit-platform-engine</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
@@ -143,8 +138,11 @@
             <version>${assertk.version}</version>
             <scope>test</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit-vintage-engine.version}</version>
+        </dependency>
 
     </dependencies>
 

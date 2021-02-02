@@ -2,18 +2,9 @@ package petstore.steps
 
 import assertk.assertAll
 import assertk.assertThat
-import assertk.assertions.isFailure
 import assertk.assertions.isTrue
-import assertk.assertions.messageContains
-import com.google.gson.Gson
 import io.cucumber.java8.En
 import io.cucumber.java8.HookNoArgsBody
-import io.restassured.http.ContentType
-import io.restassured.module.kotlin.extensions.Extract
-import io.restassured.module.kotlin.extensions.Given
-import io.restassured.module.kotlin.extensions.Then
-import io.restassured.module.kotlin.extensions.When
-import org.apache.http.HttpStatus
 import petstore.actors.PetStore
 import petstore.models.*
 

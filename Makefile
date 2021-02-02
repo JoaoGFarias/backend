@@ -1,2 +1,2 @@
 run_all_tests:
-	mvn verify -Dtest=CucumberTestsRunner
+	mvn clean verify -Dtest=CucumberTestsRunner
