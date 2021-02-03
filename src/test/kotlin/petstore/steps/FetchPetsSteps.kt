@@ -3,7 +3,7 @@ package petstore.steps
 import assertk.assertThat
 import assertk.assertions.isNotNull
 import io.cucumber.java8.En
-import petstore.actors.PetStore
+import petstore.clients.PetStore
 import petstore.models.Pet
 
 class FetchPetsSteps(private val petStore: PetStore): En {

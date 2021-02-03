@@ -1,4 +1,4 @@
-package petstore.actors
+package petstore.clients
 
 import petstore.models.Pet
 

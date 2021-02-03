@@ -1,4 +1,4 @@
-package petstore.actors
+package petstore.clients
 
 class PetStoreApiFactory {
     fun makeApi(): PetStoreApi {

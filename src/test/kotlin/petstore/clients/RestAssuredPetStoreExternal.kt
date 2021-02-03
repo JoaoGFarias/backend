@@ -1,4 +1,4 @@
-package petstore.actors
+package petstore.clients
 
 import com.google.gson.Gson
 import io.restassured.http.ContentType
@@ -10,12 +10,12 @@ import org.apache.http.HttpStatus
 import petstore.models.Pet
 import java.lang.AssertionError
 
-class RestAssuredPetStoreLocal(private val apiUrl: String, private val port: Int = 8080) : PetStoreApi {
+class RestAssuredPetStoreExternal(private val baseUrl: String, private val apiUrl: String) : PetStoreApi {
     override fun fetchPetsByStatus(status: String): Set<Pet> =
         Given {
-            port(port).queryParam("status", status)
+            queryParam("status", status)
         }. When {
-            get("$apiUrl/pet/findByStatus")
+            get("$baseUrl$apiUrl/pet/findByStatus")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -24,10 +24,10 @@ class RestAssuredPetStoreLocal(private val apiUrl: String, private val port: Int
 
     override fun addPetToStore(pet: Pet): Pet =
         Given {
-            port(port).
-            contentType(ContentType.JSON).body(makePetJson(pet))
+            contentType(ContentType.JSON)
+                .body(makePetJson(pet))
         }. When {
-            post("$apiUrl/pet")
+            post("$baseUrl$apiUrl/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -39,10 +39,10 @@ class RestAssuredPetStoreLocal(private val apiUrl: String, private val port: Int
 
     override fun updatePetInStore(pet: Pet): Pet =
         Given {
-            port(port).
-            contentType(ContentType.JSON).body(makePetJson(pet))
+            contentType(ContentType.JSON)
+                .body(makePetJson(pet))
         }. When {
-            put("$apiUrl/pet")
+            put("$baseUrl$apiUrl/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -50,10 +50,8 @@ class RestAssuredPetStoreLocal(private val apiUrl: String, private val port: Int
         }
 
     override fun deletePet(pet: Pet) {
-        Given {
-            port(port)
-        }. When {
-            delete("$apiUrl/pet/${pet.id}")
+        When {
+            delete("$baseUrl$apiUrl/pet/${pet.id}")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }
@@ -61,10 +59,8 @@ class RestAssuredPetStoreLocal(private val apiUrl: String, private val port: Int
 
     override fun isPetMissingInStore(pet: Pet): Boolean {
         return try {
-            Given {
-                port(port)
-            }.When {
-                get("$apiUrl/pet/${pet.id}")
+            When {
+                get("$baseUrl$apiUrl/pet/${pet.id}")
             }. Then {
                 statusCode(HttpStatus.SC_NOT_FOUND)
             }

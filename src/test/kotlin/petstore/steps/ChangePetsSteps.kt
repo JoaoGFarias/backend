@@ -4,7 +4,7 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isTrue
 import io.cucumber.java8.En
-import petstore.actors.PetStore
+import petstore.clients.PetStore
 import petstore.models.*
 
 class ChangePetsSteps(private val petStore: PetStore): En {
