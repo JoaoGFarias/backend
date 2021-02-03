@@ -4,18 +4,15 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isTrue
 import io.cucumber.java8.En
-import io.cucumber.java8.HookNoArgsBody
 import petstore.actors.PetStore
 import petstore.models.*
 
-class ChangePetsSteps: En {
+class ChangePetsSteps(private val petStore: PetStore): En {
 
 
-    private lateinit var petStore: PetStore
     private lateinit var returnedPet: Pet
 
     init {
-        Before(HookNoArgsBody { startStore() })
 
         Given("the user adds a new pet with {string} name, {string}, and {string} status") {
                 name: String, category: String, status: String ->
@@ -55,10 +52,6 @@ class ChangePetsSteps: En {
         Then("the pet no longer exists") {
             assertThat(petStore.isPetMissingInStore(returnedPet)).isTrue()
         }
-    }
-
-    private fun startStore() {
-        petStore = PetStore()
     }
 
     private fun createPet(name: String, category: String, status: String) =
