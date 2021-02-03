@@ -10,12 +10,12 @@ import org.apache.http.HttpStatus
 import petstore.models.Pet
 import java.lang.AssertionError
 
-class RestAssuredPetStoreV2(private val baseUrl: String) : PetStoreApi {
+class RestAssuredPetStoreV3(private val baseUrl: String) : PetStoreApi {
     override fun fetchPetsByStatus(status: String): Set<Pet> =
         Given {
             queryParam("status", status)
         }. When {
-            get("$baseUrl/v2/pet/findByStatus")
+            get("$baseUrl/api/v3/pet/findByStatus")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -27,7 +27,7 @@ class RestAssuredPetStoreV2(private val baseUrl: String) : PetStoreApi {
             contentType(ContentType.JSON)
                 .body(makePetJson(pet))
         }. When {
-            post("$baseUrl/v2/pet")
+            post("$baseUrl/api/v3/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -42,7 +42,7 @@ class RestAssuredPetStoreV2(private val baseUrl: String) : PetStoreApi {
             contentType(ContentType.JSON)
                 .body(makePetJson(pet))
         }. When {
-            put("$baseUrl/v2/pet")
+            put("$baseUrl/api/v3/pet")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }. Extract {
@@ -51,7 +51,7 @@ class RestAssuredPetStoreV2(private val baseUrl: String) : PetStoreApi {
 
     override fun deletePet(pet: Pet) {
         When {
-            delete("$baseUrl/v2/pet/${pet.id}")
+            delete("$baseUrl/api/v3/pet/${pet.id}")
         }. Then {
             statusCode(HttpStatus.SC_OK)
         }
@@ -60,7 +60,7 @@ class RestAssuredPetStoreV2(private val baseUrl: String) : PetStoreApi {
     override fun isPetMissingInStore(pet: Pet): Boolean {
         return try {
             When {
-                get("$baseUrl/v2/pet/${pet.id}")
+                get("$baseUrl/api/v3/pet/${pet.id}")
             }. Then {
                 statusCode(HttpStatus.SC_NOT_FOUND)
             }
