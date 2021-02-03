@@ -23,7 +23,7 @@ data class PetCategory (
 
 data class Tag (
     val id: String = randomId(),
-    val name: String
+    val name: String?
 )
 
 fun Assert<Pet>.`has same id as`(expectedPet: Pet) {
