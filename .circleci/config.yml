@@ -21,7 +21,7 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      - run: make run_version2
+      - run: make run_external
 
       - store_test_results:
           path: target/cucumber-reports

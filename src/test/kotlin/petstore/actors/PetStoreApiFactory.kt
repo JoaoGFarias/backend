@@ -2,11 +2,11 @@ package petstore.actors
 
 class PetStoreApiFactory {
     fun makeApi(): PetStoreApi {
-        val baseUrl = System.getProperty("baseUrl")
-        val version = System.getProperty("version")
-        return when(version){
-            "v2" -> RestAssuredPetStoreV2(baseUrl)
-            else -> RestAssuredPetStoreV3("baseUrl")
+        val target = System.getProperty("target")
+        return when(target){
+            "external" -> RestAssuredPetStoreExternal(System.getProperty("baseUrl"), System.getProperty("apiUrl"))
+            "local" -> RestAssuredPetStoreLocal(System.getProperty("apiUrl"), System.getProperty("port").toInt())
+            else -> throw Error()
         }
     }
 
